@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import glob
 
-# Шлях до зображень (заміни на свій)
-images = sorted(glob.glob("D:\\sasha\\4-course\\secondsemestr\\diplom\\dataset\\sequences\\09\\image_0\\*.png"))  # наприклад, ./data/00/image_0/*.png
+# Шлях до зображень
+images = sorted(glob.glob("D:\\sasha\\4-course\\secondsemestr\\diplom\\dataset\\sequences\\09\\image_0\\*.png"))
 
 filename = "D:\\sasha\\4-course\\secondsemestr\\diplom\\dataset\\sequences\\09\\calib.txt"
 def read_p0_from_calib_file(filename):
@@ -22,7 +22,7 @@ print(P0)
 K = P0[:, :3]
 print(K)
 
-# файл с настоящими данными
+# файл с дійсними даними
 filename_res = "D:\\sasha\\4-course\\secondsemestr\\diplom\\доп инфа\\poses\\poses\\09.txt"
 def create_results(filename_res):
     lines = []
