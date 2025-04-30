@@ -4,7 +4,7 @@ video_path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\test\\start_video\\vid
 cap = cv2.VideoCapture(video_path)
 
 if not cap.isOpened():
-    print("Ошибка при открытии видео")
+    print("Помилка при відкритті відео")
 else:
     while True:
         ret, frame = cap.read()
