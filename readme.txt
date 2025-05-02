@@ -19,7 +19,7 @@ diplom
 #Daset
 в проекті використовується KITTI Odometry Dataset, його можливо отримати за посиланням
 https://www.cvlibs.net/datasets/kitti/eval_odometry.php 
-або на гугл диску(але тут тільки по окремим папкам, для яких дані для навчання)
+або на гугл диску(окремим папкам)
 00 - https://drive.google.com/drive/u/0/folders/1KNLwCAPfbbAXG2dllrzVJu4ONx-5kXZ_
 01 - https://drive.google.com/drive/u/0/folders/17OKE0Hm15zwhg1RqZIlIX_i5x-w44wxO
 02 - https://drive.google.com/drive/u/0/folders/19-c26ylk5Gr2f8twuVdlj6S1sqxtNWIG
@@ -31,6 +31,9 @@ https://www.cvlibs.net/datasets/kitti/eval_odometry.php
 08 - https://drive.google.com/drive/u/0/folders/1j6voTkEcjVClUgwSQzmdTaZTavx6uj1r
 09 - https://drive.google.com/drive/u/0/folders/1H39AP_sTMufHKUuVzAJplCMteGPwnwfU
 10 - https://drive.google.com/drive/u/0/folders/102buzjBlWYeSIpdj0dGWXctfV6HdQldX
+
+один zip-файл
+https://drive.google.com/drive/folders/1xeUNA7LYh4OBlBUQoRfGOBQofvDxCP9v
 
 В папці additional знаходяться програми для роботи з відео, по вирізання по довжинні відео, вирізання області інтересу, перетворення в послідовність картинок, та накладання яуихось данних на відео.
 В папці classic_methods знаходяться классичні методи для вирішення задачі.
