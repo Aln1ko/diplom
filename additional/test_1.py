@@ -1,9 +1,11 @@
+
 import cv2
 import torch
 import torch.nn as nn
 from torchvision.models import resnet50, ResNet50_Weights
 from torchvision import transforms
 from PIL import Image
+import torch.nn.functional as F
 
 # class Network(nn.Module):
 #     def __init__(self):
@@ -144,84 +146,74 @@ class Network(nn.Module):
                 nn.init.normal_(m.weight, 0, 0.1)
                 nn.init.zeros_(m.bias)
 
-
 transform = transforms.Compose([
         transforms.Grayscale(),
         transforms.Resize((180, 320)),
+        # transforms.Resize((720, 1280)),
         transforms.ToTensor()
     ])
+
 model = Network()
 
-# path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\code\\additional\\1_epoch.pth'
+# path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\code1\\additional\\1_epoch.pth'
 path = "D:\\sasha\\4-course\\secondsemestr\\diplom\\доп инфа\\model_5_0-20250505T050356Z-1-001\\model_5_0\\20_epoch.pth"
-checkpoint = torch.load(path,map_location=torch.device('cpu'))
+checkpoint = torch.load(path, map_location=torch.device('cpu'))
 model.load_state_dict( checkpoint['state_model'] )
 model.eval()
 
 video_path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\test\\start_video\\video_test.mp4'
 output_video_path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\test\\fin_video\\fin_video.mp4'
-start_time = 57
-end_time = 87
+
 x1, y1, width, height = 150, 50, 1130, 325
 speedo_x, speedo_y, speedo_w, speedo_h = 880, 440, 400, 280
 overlay_x,overlay_y = width - speedo_w//3 ,height - speedo_h//3
 
 cap = cv2.VideoCapture(video_path)
-
 fps = cap.get(cv2.CAP_PROP_FPS)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 print(f"fps: {fps}, width: {frame_width}, height:{frame_height}")
-cap.set(cv2.CAP_PROP_POS_FRAMES, start_time * fps)
 
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
 
-ret, prev_frame = cap.read()
-if not ret:
-    raise ValueError("Не удалось прочитать видео!")
-
-# Конвертуємо в PIL та застосовуємо трансформації
-prev_frame_pil = Image.fromarray(cv2.cvtColor(prev_frame, cv2.COLOR_BGR2RGB))
-prev_frame_tensor = transform(prev_frame_pil).unsqueeze(0) # [ 1, 1, H, W]
-cap.set(cv2.CAP_PROP_POS_FRAMES, start_time * fps + 1)
-i = 1
-speed = 0  # Початкове значення
-text = "0"  # рядок для відображення
-frame_num = 1
-
+start_time = 57
+# end_time = 87
+video_duration = 30
 step = 1
-fps_int = int(fps)
 
-while True:
+speed = 0 # Початкове значення
+text = "0" # рядок для відображення
+frame_num = 0
+max_frame_num = video_duration * fps
+fps_int = int(fps)
+cap.set(cv2.CAP_PROP_POS_FRAMES, int(start_time * fps))
+
+while (frame_num < max_frame_num):
     ret, frame = cap.read()
     if not ret:
         break
-    current_time = cap.get(cv2.CAP_PROP_POS_FRAMES) / fps
-    # print(current_time)
+
     cropped_frame = frame[y1:y1+height, x1:x1+width]
-    # Конвертація BGR (OpenCV) у RGB
-    if frame_num % step == 0:
+    #Конвертація BGR (OpenCV) у RGB
+    if frame_num % fps_int == 0:
+        frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
+        # Перетворення numpy array на PIL Image
+        pil_image = Image.fromarray(frame_rgb)
+        # Застосування трансформацій
+        prev_tensor_image = transform(pil_image).unsqueeze(0)  # Результат: [1, 1, H, W]
+    if frame_num % fps_int == step:
         frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
         # Перетворення numpy array на PIL Image
         pil_image = Image.fromarray(frame_rgb)
         # Застосування трансформацій
         tensor_image = transform(pil_image).unsqueeze(0)  # Результат: [1, 1, H, W]
-    if i%fps == 0:
-        # frame_rgb = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
-        # # Перетворення numpy array на PIL Image
-        # pil_image = Image.fromarray(frame_rgb)
-        # # Застосування трансформацій
-        # tensor_image = transform(pil_image).unsqueeze(0) # Результат: [1, 1, H, W]
         with torch.no_grad():
-            output = model(prev_frame_tensor, tensor_image)
+            output = model(prev_tensor_image, tensor_image)
         distance = output[0][0].item()
         speed = distance*fps*3.6/ step
-        # speed = distance*fps*3.6
         print(f"distance is {distance}, speed is {speed}")
-    if frame_num % step == 0:
-        prev_frame_tensor = tensor_image
-    i += 1
+
     frame_num += 1
 
     text = str(int(speed))
@@ -238,12 +230,6 @@ while True:
 
     cropped_frame[overlay_y:overlay_y+h, overlay_x:overlay_x+w] = speddo_small
 
-
-    if current_time > end_time:
-        break
-    # cv2.imshow('Video', cropped_frame)
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
     out.write(cropped_frame)
 
 cap.release()
