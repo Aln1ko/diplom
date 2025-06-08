@@ -1,0 +1,13 @@
+
+Rmse_local: 0.066 m
+Position accuracy_local (@0.1 m): 0.940
+Angle avg loss_local (@0.1 rad): 0.003
+Angle accuracy_local (@0.1 rad): 1.000
+ATE mean_local: 0.044 m, median_local: 0.032 m
+
+Rmse: 28.458 m
+Position accuracy (@5 m): 0.095
+Angle avg loss (@0.1 rad): 0.156
+Angle accuracy (@0.1 rad): 0.372
+ATE mean: 25.129 m, median: 26.234 m
+Drift: [6.2447, 14.8615, 16.7122, 20.3387, 28.9075, 34.7319, 41.8183, 40.7463, 39.7993]

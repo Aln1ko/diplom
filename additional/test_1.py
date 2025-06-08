@@ -157,6 +157,7 @@ model = Network()
 
 # path = 'D:\\sasha\\4-course\\secondsemestr\\diplom\\code1\\additional\\1_epoch.pth'
 path = "D:\\sasha\\4-course\\secondsemestr\\diplom\\доп инфа\\model_5_0-20250505T050356Z-1-001\\model_5_0\\20_epoch.pth"
+# path = 'D:\\download\\epoch_12.pth'
 checkpoint = torch.load(path, map_location=torch.device('cpu'))
 model.load_state_dict( checkpoint['state_model'] )
 model.eval()
@@ -180,7 +181,7 @@ out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
 start_time = 57
 # end_time = 87
 video_duration = 30
-step = 1
+step =4
 
 speed = 0 # Початкове значення
 text = "0" # рядок для відображення
